@@ -40,3 +40,21 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files (if you have sensitive config)
+.env
+.env.local
+.env.*.local
+environment.prod.ts  # Only if it contains secrets
+
+# Angular specific
+/.angular/
+*.ngfactory.ts
+*.ngsummary.json
+
+# Testing
+/coverage/
+/.nyc_output/
+
+# Build artifacts
+*.js.map
