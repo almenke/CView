@@ -1,0 +1,89 @@
+<nav class="sticky top-0 z-50 bg-[#6AA6CE] shadow-lg">
+  <div class="px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <!-- Project Selector -->
+      <div class="relative">
+        <button
+          (click)="toggleProjectDropdown()"
+          class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-md transition-colors"
+        >
+          <span class="font-medium">
+            {{ selectedProject ? 'Project: ' + selectedProject.name : 'Select Project' }}
+          </span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Dropdown -->
+        @if (showProjectDropdown) {
+          <div class="absolute top-full left-0 mt-1 w-64 bg-white rounded-md shadow-lg z-50">
+            <div class="py-1">
+              @for (project of projects; track project.id) {
+                <button
+                  (click)="selectProject(project)"
+                  class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  [class.bg-gray-100]="selectedProject?.id === project.id"
+                >
+                  {{ project.name }}
+                </button>
+              }
+              @if (projects.length === 0) {
+                <div class="px-4 py-2 text-gray-500 italic">No projects</div>
+              }
+              <hr class="my-1">
+              <button
+                (click)="onNewProject()"
+                class="w-full text-left px-4 py-2 text-blue-600 hover:bg-gray-100"
+              >
+                + New Project
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Edit Project Button -->
+      @if (selectedProject) {
+        <button
+          (click)="onEditProject()"
+          class="text-white hover:bg-white/20 px-3 py-2 rounded-md transition-colors"
+        >
+          Edit Project
+        </button>
+      }
+    </div>
+
+    <!-- Right Side Actions -->
+    @if (selectedProject) {
+      <div class="flex items-center space-x-2">
+        <button
+          (click)="onManageOwners()"
+          class="text-white hover:bg-white/20 px-3 py-2 rounded-md transition-colors"
+        >
+          Manage Owners
+        </button>
+        <button
+          (click)="onManageSprints()"
+          class="text-white hover:bg-white/20 px-3 py-2 rounded-md transition-colors"
+        >
+          Manage Sprints
+        </button>
+        <button
+          (click)="onUploadExcel()"
+          class="bg-white text-[#6AA6CE] hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors"
+        >
+          Upload Excel
+        </button>
+      </div>
+    }
+  </div>
+</nav>
+
+<!-- Click outside to close dropdown -->
+@if (showProjectDropdown) {
+  <div
+    class="fixed inset-0 z-40"
+    (click)="showProjectDropdown = false"
+  ></div>
+}

@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Sticky Menu -->
+  <app-sticky-menu
+    [projects]="projects"
+    [selectedProject]="selectedProject"
+    (projectSelected)="selectProject($event)"
+    (editProjectClicked)="onEditProject()"
+    (manageOwnersClicked)="onManageOwners()"
+    (manageSprintsClicked)="onManageSprints()"
+    (uploadExcelClicked)="onUploadExcel()"
+    (newProjectClicked)="onNewProject()"
+  />
+
+  <!-- Timeline -->
+  <app-timeline [project]="selectedProject" />
+
+  <!-- Project Dialog -->
+  <app-project-dialog
+    [project]="editingProject"
+    [owners]="selectedProject?.owners || []"
+    [isOpen]="showProjectDialog"
+    (close)="showProjectDialog = false"
+    (save)="onSaveProject($event)"
+    (deleteProject)="onDeleteProject($event)"
+  />
+
+  <!-- Owner Dialog -->
+  <app-owner-dialog
+    [owners]="selectedProject?.owners || []"
+    [isOpen]="showOwnerDialog"
+    (close)="showOwnerDialog = false"
+    (createOwner)="onCreateOwner($event)"
+    (updateOwner)="onUpdateOwner($event)"
+    (deleteOwner)="onDeleteOwner($event)"
+  />
+
+  <!-- Sprint Dialog -->
+  <app-sprint-dialog
+    [sprints]="selectedProject?.sprints || []"
+    [isOpen]="showSprintDialog"
+    (close)="showSprintDialog = false"
+    (createSprint)="onCreateSprint($event)"
+    (updateSprint)="onUpdateSprint($event)"
+    (deleteSprint)="onDeleteSprint($event)"
+    (regenerateSprints)="onRegenerateSprints()"
+  />
+
+  <!-- File Upload Dialog -->
+  <app-file-upload
+    [isOpen]="showFileUpload"
+    [isLoading]="isUploading"
+    (close)="showFileUpload = false"
+    (fileSelected)="onFileSelected($event)"
+  />
+</div>
