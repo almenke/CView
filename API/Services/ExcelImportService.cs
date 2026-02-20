@@ -112,6 +112,23 @@ public class ExcelImportService : IExcelImportService
                         }
                     }
 
+                    // Parse percent complete (spreadsheet stores as decimal: 1.0 = 100%, 0.5 = 50%)
+                    int percentComplete = 0;
+                    var percentCompleteRaw = GetCellRawValue(worksheet, row, headers, "% Complete", "Percent Complete", "PercentComplete", "%Complete");
+                    if (percentCompleteRaw is double d)
+                    {
+                        percentComplete = (int)Math.Round(d * 100);
+                    }
+                    else
+                    {
+                        var percentCompleteStr = percentCompleteRaw?.ToString()?.Replace("%", "").Trim();
+                        if (!string.IsNullOrWhiteSpace(percentCompleteStr) && double.TryParse(percentCompleteStr, out var parsed))
+                        {
+                            // If value is <= 1, treat as decimal (0.5 = 50%), otherwise treat as whole number
+                            percentComplete = parsed <= 1.0 ? (int)Math.Round(parsed * 100) : (int)Math.Round(parsed);
+                        }
+                    }
+
                     // Create task
                     var task = new ProjectTask
                     {
@@ -120,6 +137,7 @@ public class ExcelImportService : IExcelImportService
                         OwnerId = owner?.Id,
                         PlannedStartsAt = startDate,
                         PlannedEndsAt = endDate,
+                        PercentComplete = percentComplete,
                         Status = StatusEnum.NotSet
                     };
 
@@ -149,6 +167,22 @@ public class ExcelImportService : IExcelImportService
 
         // Check if outline level contains a decimal (indicating a subtask)
         return outlineLevel.Contains('.');
+    }
+
+    private static object? GetCellRawValue(ExcelWorksheet worksheet, int row, Dictionary<string, int> headers, params string[] possibleNames)
+    {
+        foreach (var name in possibleNames)
+        {
+            if (headers.TryGetValue(name, out var col))
+            {
+                var value = worksheet.Cells[row, col].Value;
+                if (value != null)
+                {
+                    return value;
+                }
+            }
+        }
+        return null;
     }
 
     private static string? GetCellValue(ExcelWorksheet worksheet, int row, Dictionary<string, int> headers, params string[] possibleNames)

@@ -3,6 +3,7 @@ export interface Owner {
   projectId: number;
   name: string;
   title: string;
+  color?: string;
   createdAt: Date;
   updatedAt: Date;
 }

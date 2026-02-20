@@ -64,6 +64,15 @@ public class ProjectsController : ControllerBase
         return Ok(project);
     }
 
+    [HttpPost("{id}/clear-data")]
+    public async Task<IActionResult> ClearData(int id)
+    {
+        var result = await _projectService.ClearProjectDataAsync(id);
+        if (!result) return NotFound();
+        var project = await _projectService.GetProjectByIdAsync(id);
+        return Ok(project);
+    }
+
     [HttpPost("{id}/import")]
     public async Task<ActionResult<ImportResultDto>> Import(int id, IFormFile file)
     {

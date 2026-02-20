@@ -37,6 +37,10 @@ export class ProjectService {
     return this.http.post<Project>(`${this.apiUrl}/${id}/regenerate-sprints`, {});
   }
 
+  clearData(id: number): Observable<Project> {
+    return this.http.post<Project>(`${this.apiUrl}/${id}/clear-data`, {});
+  }
+
   importExcel(projectId: number, file: File): Observable<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);

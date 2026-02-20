@@ -9,12 +9,14 @@ public class ProjectService : IProjectService
     private readonly IProjectRepository _projectRepository;
     private readonly ISprintRepository _sprintRepository;
     private readonly IOwnerRepository _ownerRepository;
+    private readonly ITaskRepository _taskRepository;
 
-    public ProjectService(IProjectRepository projectRepository, ISprintRepository sprintRepository, IOwnerRepository ownerRepository)
+    public ProjectService(IProjectRepository projectRepository, ISprintRepository sprintRepository, IOwnerRepository ownerRepository, ITaskRepository taskRepository)
     {
         _projectRepository = projectRepository;
         _sprintRepository = sprintRepository;
         _ownerRepository = ownerRepository;
+        _taskRepository = taskRepository;
     }
 
     public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
@@ -36,7 +38,8 @@ public class ProjectService : IProjectService
             Name = dto.Name,
             OwnerId = dto.OwnerId,
             StartsAt = dto.StartsAt,
-            EndsAt = dto.EndsAt
+            EndsAt = dto.EndsAt,
+            SprintStartNumber = dto.SprintStartNumber
         };
 
         await _projectRepository.AddAsync(project);
@@ -57,6 +60,7 @@ public class ProjectService : IProjectService
         project.OwnerId = dto.OwnerId;
         project.StartsAt = dto.StartsAt;
         project.EndsAt = dto.EndsAt;
+        project.SprintStartNumber = dto.SprintStartNumber;
 
         await _projectRepository.UpdateAsync(project);
 
@@ -76,6 +80,16 @@ public class ProjectService : IProjectService
         return true;
     }
 
+    public async Task<bool> ClearProjectDataAsync(int projectId)
+    {
+        var project = await _projectRepository.GetByIdAsync(projectId);
+        if (project == null) return false;
+
+        await _taskRepository.DeleteTasksByProjectIdAsync(projectId);
+        await _ownerRepository.DeleteOwnersByProjectIdAsync(projectId);
+        return true;
+    }
+
     public async Task RegenerateSprintsAsync(int projectId)
     {
         var project = await _projectRepository.GetByIdAsync(projectId);
@@ -92,7 +106,7 @@ public class ProjectService : IProjectService
     {
         var sprintDuration = TimeSpan.FromDays(14); // 2-week sprints
         var currentStart = project.StartsAt;
-        var sprintNumber = 1;
+        var sprintNumber = project.SprintStartNumber;
 
         while (currentStart < project.EndsAt)
         {
@@ -157,6 +171,7 @@ public class ProjectService : IProjectService
                 ActualStartsAt = t.ActualStartsAt,
                 ActualEndsAt = t.ActualEndsAt,
                 Status = t.Status,
+                PercentComplete = t.PercentComplete,
                 CreatedAt = t.CreatedAt,
                 UpdatedAt = t.UpdatedAt
             }).ToList()

@@ -18,12 +18,14 @@ export class ProjectDialogComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<CreateProject | UpdateProject>();
   @Output() deleteProject = new EventEmitter<number>();
+  @Output() clearData = new EventEmitter<number>();
 
   formData = {
     name: '',
     ownerId: null as number | null,
     startsAt: '',
-    endsAt: ''
+    endsAt: '',
+    sprintStartNumber: 1
   };
 
   get isEditMode(): boolean {
@@ -44,7 +46,8 @@ export class ProjectDialogComponent implements OnInit {
         name: this.project.name,
         ownerId: this.project.ownerId || null,
         startsAt: this.formatDate(new Date(this.project.startsAt)),
-        endsAt: this.formatDate(new Date(this.project.endsAt))
+        endsAt: this.formatDate(new Date(this.project.endsAt)),
+        sprintStartNumber: 1
       };
     } else {
       const today = new Date();
@@ -55,7 +58,8 @@ export class ProjectDialogComponent implements OnInit {
         name: '',
         ownerId: null,
         startsAt: this.formatDate(today),
-        endsAt: this.formatDate(sixMonthsLater)
+        endsAt: this.formatDate(sixMonthsLater),
+        sprintStartNumber: 1
       };
     }
   }
@@ -69,7 +73,8 @@ export class ProjectDialogComponent implements OnInit {
       name: this.formData.name,
       ownerId: this.formData.ownerId || undefined,
       startsAt: new Date(this.formData.startsAt),
-      endsAt: new Date(this.formData.endsAt)
+      endsAt: new Date(this.formData.endsAt),
+      sprintStartNumber: this.formData.sprintStartNumber
     };
     this.save.emit(data);
   }
@@ -77,6 +82,12 @@ export class ProjectDialogComponent implements OnInit {
   onDelete(): void {
     if (this.project && confirm('Are you sure you want to delete this project?')) {
       this.deleteProject.emit(this.project.id);
+    }
+  }
+
+  onClearData(): void {
+    if (this.project && confirm('Clear all tasks and owners for this project? This cannot be undone.')) {
+      this.clearData.emit(this.project.id);
     }
   }
 

@@ -111,6 +111,16 @@ export class App implements OnInit {
     }
   }
 
+  onClearProjectData(id: number): void {
+    this.projectService.clearData(id).subscribe({
+      next: () => {
+        this.showProjectDialog = false;
+        this.refreshSelectedProject();
+      },
+      error: (err) => console.error('Error clearing project data:', err)
+    });
+  }
+
   onDeleteProject(id: number): void {
     this.projectService.delete(id).subscribe({
       next: () => {

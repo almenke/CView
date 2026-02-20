@@ -7,6 +7,7 @@ public class Project : BaseEntity
     public int? OwnerId { get; set; }
     public DateTime StartsAt { get; set; }
     public DateTime EndsAt { get; set; }
+    public int SprintStartNumber { get; set; } = 1;
 
     // Navigation properties
     public Owner? Owner { get; set; }

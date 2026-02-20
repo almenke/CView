@@ -16,6 +16,7 @@ export interface Task {
   actualStartsAt?: Date;
   actualEndsAt?: Date;
   status: StatusEnum;
+  percentComplete: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +29,7 @@ export interface CreateTask {
   actualStartsAt?: Date;
   actualEndsAt?: Date;
   status: StatusEnum;
+  percentComplete: number;
 }
 
 export interface UpdateTask {
@@ -38,4 +40,5 @@ export interface UpdateTask {
   actualStartsAt?: Date;
   actualEndsAt?: Date;
   status: StatusEnum;
+  percentComplete: number;
 }

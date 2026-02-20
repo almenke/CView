@@ -34,9 +34,16 @@
                   <div class="space-y-1">
                     @for (task of sprintCol.tasks; track task.id) {
                       <div
-                        class="p-1 text-center font-light text-sm rounded-sm border border-gray-400"
+                        class="p-1 text-center font-light text-sm rounded-sm border border-gray-400 relative"
                         [ngClass]="getTaskColor(task)"
                       >
+                        @if (task.percentComplete === 100) {
+                          <div class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-green-600 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        }
                         <div class="text-sm font-medium">{{ task.name }}</div>
                         <div class="text-sm">{{ task.ownerName || 'Unassigned' }}</div>
                         <div class="text-sm">{{ formatTaskDates(task) }}</div>

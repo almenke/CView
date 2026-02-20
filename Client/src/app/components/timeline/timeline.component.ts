@@ -27,22 +27,21 @@ export class TimelineComponent implements OnChanges {
 
   monthColumns: MonthColumn[] = [];
 
-  // Color palette for task cards
-  private taskColors = [
-    'bg-red-300',
-    'bg-blue-300',
-    'bg-yellow-300',
-    'bg-green-300',
-    'bg-purple-300',
-    'bg-pink-300',
-    'bg-indigo-300',
-    'bg-orange-300',
-    'bg-teal-300',
-    'bg-cyan-300'
-  ];
+  // Option 1: Ocean Breeze
+private taskColors = [
+  'bg-blue-300',
+  'bg-sky-400',
+  'bg-emerald-300',
+  'bg-yellow-200',
+  'bg-violet-300',
+  'bg-amber-300',
 
-  // Map task names to colors for consistency
-  private taskColorMap = new Map<string, string>();
+];
+
+  // Map owner IDs to colors for consistency
+  private ownerColorMap = new Map<number, string>();
+  // Track color assignment index for new owners
+  private colorAssignmentIndex = 0;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['project']) {
@@ -55,6 +54,9 @@ export class TimelineComponent implements OnChanges {
       this.monthColumns = [];
       return;
     }
+
+    // Initialize owner color map from project owners
+    this.initializeOwnerColors();
 
     // Get unique months from project date range (up to 6 months)
     const startDate = new Date(this.project.startsAt);
@@ -144,20 +146,33 @@ export class TimelineComponent implements OnChanges {
     return `${start.getMonth() + 1}/${start.getDate()}/${start.getFullYear().toString().slice(-2)} - ${end.getMonth() + 1}/${end.getDate()}/${end.getFullYear().toString().slice(-2)}`;
   }
 
-  getTaskColor(task: Task): string {
-    // Get base task name (before " - Dev" or " - UAT" etc.)
-    const baseName = this.getBaseTaskName(task.name);
+  initializeOwnerColors(): void {
+    if (!this.project || !this.project.owners) return;
 
-    if (!this.taskColorMap.has(baseName)) {
-      const colorIndex = this.taskColorMap.size % this.taskColors.length;
-      this.taskColorMap.set(baseName, this.taskColors[colorIndex]);
-    }
+    // Build owner color map, assigning colors to owners that don't have one
+    this.ownerColorMap.clear();
+    this.colorAssignmentIndex = 0;
 
-    return this.taskColorMap.get(baseName) || this.taskColors[0];
+    this.project.owners.forEach(owner => {
+      // Use the owner's assigned color if available, otherwise assign one
+      if (owner.color) {
+        this.ownerColorMap.set(owner.id, owner.color);
+      } else {
+        const colorIndex = this.colorAssignmentIndex % this.taskColors.length;
+        const assignedColor = this.taskColors[colorIndex];
+        this.ownerColorMap.set(owner.id, assignedColor);
+        this.colorAssignmentIndex++;
+      }
+    });
   }
 
-  getBaseTaskName(name: string): string {
-    // Remove common suffixes like " - Dev", " - UAT", " - QA", etc.
-    return name.replace(/\s*-\s*(Dev|UAT|QA|Test|Prod|Production)$/i, '').trim();
+  getTaskColor(task: Task): string {
+    // If task has an owner, use the owner's color
+    if (task.ownerId && this.ownerColorMap.has(task.ownerId)) {
+      return task.name.includes("REQ") ? "bg-slate-400" : (this.ownerColorMap.get(task.ownerId) || this.taskColors[0]);
+    }
+
+    // Fallback: use a default color for unassigned tasks
+    return this.taskColors[0];
   }
 }

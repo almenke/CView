@@ -14,6 +14,7 @@ public class TaskDto
     public DateTime? ActualStartsAt { get; set; }
     public DateTime? ActualEndsAt { get; set; }
     public StatusEnum Status { get; set; }
+    public int PercentComplete { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
@@ -27,6 +28,7 @@ public class CreateTaskDto
     public DateTime? ActualStartsAt { get; set; }
     public DateTime? ActualEndsAt { get; set; }
     public StatusEnum Status { get; set; } = StatusEnum.NotSet;
+    public int PercentComplete { get; set; }
 }
 
 public class UpdateTaskDto
@@ -38,4 +40,5 @@ public class UpdateTaskDto
     public DateTime? ActualStartsAt { get; set; }
     public DateTime? ActualEndsAt { get; set; }
     public StatusEnum Status { get; set; }
+    public int PercentComplete { get; set; }
 }

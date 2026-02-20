@@ -21,6 +21,7 @@ export interface CreateProject {
   ownerId?: number;
   startsAt: Date;
   endsAt: Date;
+  sprintStartNumber?: number;
 }
 
 export interface UpdateProject {
@@ -28,4 +29,5 @@ export interface UpdateProject {
   ownerId?: number;
   startsAt: Date;
   endsAt: Date;
+  sprintStartNumber?: number;
 }

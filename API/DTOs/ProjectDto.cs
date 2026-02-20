@@ -23,6 +23,7 @@ public class CreateProjectDto
     public int? OwnerId { get; set; }
     public DateTime StartsAt { get; set; }
     public DateTime EndsAt { get; set; }
+    public int SprintStartNumber { get; set; } = 1;
 }
 
 public class UpdateProjectDto
@@ -31,4 +32,5 @@ public class UpdateProjectDto
     public int? OwnerId { get; set; }
     public DateTime StartsAt { get; set; }
     public DateTime EndsAt { get; set; }
+    public int SprintStartNumber { get; set; } = 1;
 }

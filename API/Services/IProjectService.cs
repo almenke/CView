@@ -10,4 +10,5 @@ public interface IProjectService
     Task<ProjectDto?> UpdateProjectAsync(int id, UpdateProjectDto dto);
     Task<bool> DeleteProjectAsync(int id);
     Task RegenerateSprintsAsync(int projectId);
+    Task<bool> ClearProjectDataAsync(int projectId);
 }

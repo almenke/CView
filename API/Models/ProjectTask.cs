@@ -11,6 +11,7 @@ public class ProjectTask : BaseEntity
     public DateTime? ActualStartsAt { get; set; }
     public DateTime? ActualEndsAt { get; set; }
     public StatusEnum Status { get; set; } = StatusEnum.NotSet;
+    public int PercentComplete { get; set; }
 
     // Navigation properties
     public Project Project { get; set; } = null!;
